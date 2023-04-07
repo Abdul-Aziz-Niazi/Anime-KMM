@@ -13,7 +13,7 @@ import com.abdulaziz.animekmm.android.ui.destinations.Genre
 fun NavigationGraph(navController: NavHostController, feedViewModel: FeedViewModel) {
     NavHost(navController, startDestination = BottomNavItem.Feed.screen_route) {
         composable(BottomNavItem.Feed.screen_route) {
-            Feed(feedViewModel)
+            Feed()
         }
         composable(BottomNavItem.Genre.screen_route) {
             Genre()

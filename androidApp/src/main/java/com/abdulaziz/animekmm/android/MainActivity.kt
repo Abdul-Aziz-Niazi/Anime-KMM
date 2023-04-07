@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
         val navController = rememberNavController()
         Scaffold(
             bottomBar = { AppBottomNavigation(navController = navController) }, content = { _ ->
-                NavigationGraph(navController = navController, feedViewModel)
+                NavigationGraph(navController = navController, feedViewModel,)
             })
     }
 }

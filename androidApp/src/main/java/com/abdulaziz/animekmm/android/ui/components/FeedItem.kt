@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.abdulaziz.animekmm.data.FeedItemData
@@ -43,9 +44,9 @@ fun FeedItem(feedItemData: FeedItemData) {
                     .padding(16.dp)
             ) {
                 Text(text = feedItemData.title.toString(), style = AppStyles.textTitle)
-                Text(text = "Title Here..", style = AppStyles.textBodySemiBold)
-                Text(text = "Title Here..", style = AppStyles.textLabel)
-                Text(text = "Title Here..", style = AppStyles.textCaption)
+                Text(text = feedItemData.genres?.joinToString(", ").toString(), style = AppStyles.textBodySemiBold)
+                Text(text = "${if (feedItemData.episodes == 0) 1 else feedItemData.episodes} Episodes", style = AppStyles.textLabel)
+                Text(text = feedItemData.synopsis.toString(), maxLines = 5,overflow = TextOverflow.Ellipsis, style = AppStyles.textCaption)
             }
         }
     }
