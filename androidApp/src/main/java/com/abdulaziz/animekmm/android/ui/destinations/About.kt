@@ -13,22 +13,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
 @Composable
-fun About() {
+fun About(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
             .wrapContentSize(Alignment.Center)
     ) {
+        //Text stating that this app is made in compose and KMM
         Text(
-            text = "About Screen",
-            fontWeight = FontWeight.Bold,
+            text = "Made with Compose, KMM, and Ktor. This app consumes the Anime API from Rapid API",
             color = Color.Black,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            fontSize = 20.sp
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentSize(Alignment.Center)
         )
     }
 }

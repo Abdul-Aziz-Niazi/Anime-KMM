@@ -6,15 +6,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 interface FeedItemUseCase {
-    fun getFeedItem(): Flow<ApiState>
+    fun getFeedItem(genre: String?): Flow<ApiState>
 }
 
 class FeedItemUseCaseImpl : FeedItemUseCase {
     private val repository = FeedItemRepository()
-    override fun getFeedItem(): Flow<ApiState> = flow {
+    override fun getFeedItem(genre: String?): Flow<ApiState> = flow {
         emit(ApiState.Loading)
         kotlin.runCatching {
-            repository.getFeedItemData()
+            repository.getFeedItemData(genre?:"")
         }.onSuccess {
             emit(ApiState.Success(it.data))
         }.onFailure {

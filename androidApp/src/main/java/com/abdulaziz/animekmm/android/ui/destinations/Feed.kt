@@ -7,34 +7,37 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.abdulaziz.animekmm.android.MainActivity
-import com.abdulaziz.animekmm.android.domain.FeedViewModel
-import com.abdulaziz.animekmm.data.FeedItemData
 import com.abdulaziz.animekmm.android.ui.components.FeedItem
+import com.abdulaziz.animekmm.android.ui.theme.AppStyles
+import com.abdulaziz.animekmm.data.FeedItemData
 import com.abdulaziz.animekmm.network.ApiState
 import com.abdulaziz.animekmm.usercase.FeedItemUseCaseImpl
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
-fun Feed() {
+fun Feed(navController: NavHostController, genre: String?) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current as MainActivity
     var listOfAnime by remember { mutableStateOf(listOf<FeedItemData>()) }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom =56.dp)
+            .padding(bottom = 56.dp)
             .background(MaterialTheme.colors.background)
     ) {
         val feedUseCase = FeedItemUseCaseImpl()
         scope.launch {
-            feedUseCase.getFeedItem().collectLatest {
-                when (it){
+            feedUseCase.getFeedItem(genre).collectLatest {
+                when (it) {
                     is ApiState.Success<*> -> {
                         listOfAnime = it.result as List<FeedItemData>
                         context.showLoader.value = false
@@ -49,9 +52,13 @@ fun Feed() {
                 }
             }
         }
-        items(items = listOfAnime){ current->
+        item {
+            if (genre != null && genre.isNotEmpty()) {
+                Text(text = "Showing results for top 10 $genre anime", style = AppStyles.textBodySemiBold, modifier = Modifier.padding(8.dp))
+            }
+        }
+        items(items = listOfAnime) { current ->
             FeedItem(current)
         }
-
     }
 }
