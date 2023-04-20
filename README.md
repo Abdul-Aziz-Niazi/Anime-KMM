@@ -1,6 +1,6 @@
 # Anime-KMM
-Anime Listing App using Rapid Api (Anime Listing)
-The App is built using 
+Anime Listing App using Rapid Api [AnimeDB Listing](https://rapidapi.com/brian.rofiq/api/anime-db)  
+The App is built using  
 
 🌟 **KMM**  
 🌟 **Compose**  
