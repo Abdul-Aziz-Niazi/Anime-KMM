@@ -2,6 +2,8 @@ import SwiftUI
 import shared
 
 struct ContentView: View {
+    @EnvironmentObject var animeViewModel : AnimeViewModel
+
 	let greet = Greeting().greet()
 	init() {
         UITabBar.appearance().backgroundColor = UIColor(Color(hex: "#9C27B0"))
@@ -10,21 +12,27 @@ struct ContentView: View {
 
     }
     var body: some View {
-        ZStack {
-            Color.green.edgesIgnoringSafeArea(.all)
-            
+        NavigationView {
             TabView {
-                List(0..<10) { item in
+                List(animeViewModel.feedItemList, id:\.title) { item in
                     HStack {
-                        Image(systemName: "person.fill")
+                        AsyncImage(url: URL(string: item.image ?? ""), content: { image in
+                            image.resizable()
+                                .clipShape(RoundedRectangle(cornerSize: CoreFoundation.CGSize.init(width: 8.0, height: 8.0)))
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: 120, maxHeight: 200)
+                        }, placeholder:{
+                            ProgressView()
+                        })
                         VStack(alignment: .leading) {
-                            Text("Title")
-                            Text("Genre")
-                            Text("Episodes")
-                            Text("Description")
+                            Text(item.title ?? "").bold().font(.system(size: 26))
+                            Text((item.genres as? [String])?.joined(separator: ", ") ?? "-").bold().font(.system(size: 12)).foregroundColor(Color(hex: "#FF3700B3"))
+                            Text("Episodes: \(item.episodes ?? 0)").font(.system(size: 12))
+                            Text(item.synopsis ?? "").lineLimit(3).font(.system(size: 12))
                         }
-                    }
-                }
+                    }.padding(.leading, 8)
+                }.listStyle(PlainListStyle())
+                .listRowInsets(EdgeInsets())
                 .tabItem {
                     Image("Feed").renderingMode(.template).resizable().foregroundColor(.white)
                     Text("Feed")
@@ -34,21 +42,22 @@ struct ContentView: View {
                     Text("Genre.Name")
                 }
                 .tabItem {
-                    Image(systemName: "2.square.fill")
+                    Image("Genre").renderingMode(.template).resizable().foregroundColor(.white)
                     Text("Genre")
                 }
                 
                 HStack{
-                    Text("About")
+                    Text("Made with Compose, KMM, and Ktor. This app consumes the Anime API from Rapid API")
                 }
                 .tabItem {
-                    Image(systemName: "3.square.fill")
+                    Image("About").renderingMode(.template).resizable().foregroundColor(.white)
                     Text("About")
                 }
             }
             .accentColor(.white)
             .onAppear {
                 UITabBar.appearance().barTintColor = UIColor(Color(hex: "#9C27B0"))
+                animeViewModel.getFeedItem()
             }
         }
     }

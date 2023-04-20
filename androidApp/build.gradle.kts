@@ -50,6 +50,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.6.1")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.3.1")
 
     implementation("com.google.accompanist:accompanist-pager:0.25.0") // Pager
     implementation("com.google.accompanist:accompanist-pager-indicators:0.25.0")

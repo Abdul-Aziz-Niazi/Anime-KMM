@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.abdulaziz.animekmm.android.MainActivity
+import com.abdulaziz.animekmm.android.domain.FeedViewModel
 import com.abdulaziz.animekmm.android.ui.components.GenreItem
 import com.abdulaziz.animekmm.data.GenreData
 import com.abdulaziz.animekmm.network.ApiState
@@ -20,8 +21,7 @@ import com.abdulaziz.animekmm.usercase.GenreItemUseCaseImpl
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 @Composable
-fun Genre(navController: NavHostController) {
-    val scope = rememberCoroutineScope()
+fun Genre(navController: NavHostController, feedViewModel: FeedViewModel) {
     val context = LocalContext.current as MainActivity
     var listOfAnime by remember { mutableStateOf(listOf<GenreData>()) }
 
@@ -31,14 +31,14 @@ fun Genre(navController: NavHostController) {
             when (it) {
                 is ApiState.Success<*> -> {
                     listOfAnime = it.result as List<GenreData>
-                    context.showLoader.value = false
+                    feedViewModel.showLoader.value = false
                 }
                 is ApiState.Failure -> {
-                    context.showLoader.value = false
+                    feedViewModel.showLoader.value = false
                     Toast.makeText(context, "Something Went Wrong", Toast.LENGTH_SHORT).show()
                 }
                 is ApiState.Loading -> {
-                    context.showLoader.value = true
+                    feedViewModel.showLoader.value = true
                 }
             }
         }

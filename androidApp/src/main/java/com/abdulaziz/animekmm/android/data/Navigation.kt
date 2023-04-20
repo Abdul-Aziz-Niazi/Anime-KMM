@@ -14,10 +14,10 @@ fun NavigationGraph(navController: NavHostController, feedViewModel: FeedViewMod
     NavHost(navController, startDestination = BottomNavItem.Feed.screen_route) {
         composable(BottomNavItem.Feed.screen_route) {
             val genre:String? = it.arguments?.getString("genre") ?: ""
-            Feed(navController, genre)
+            Feed(navController, feedViewModel, genre)
         }
         composable(BottomNavItem.Genre.screen_route) {
-            Genre(navController)
+            Genre(navController, feedViewModel)
         }
         composable(BottomNavItem.About.screen_route) {
             About(navController)

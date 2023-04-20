@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.abdulaziz.animekmm.android.MainActivity
+import com.abdulaziz.animekmm.android.domain.FeedViewModel
 import com.abdulaziz.animekmm.android.ui.components.FeedItem
 import com.abdulaziz.animekmm.android.ui.theme.AppStyles
 import com.abdulaziz.animekmm.data.FeedItemData
@@ -23,35 +24,35 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
-fun Feed(navController: NavHostController, genre: String?) {
+fun Feed(navController: NavHostController, feedViewModel: FeedViewModel, genre: String?) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current as MainActivity
     var listOfAnime by remember { mutableStateOf(listOf<FeedItemData>()) }
-
+    val feedUseCase = FeedItemUseCaseImpl()
+    LaunchedEffect(Unit){
+        feedUseCase.getFeedItem(genre).collectLatest {
+            when (it) {
+                is ApiState.Success<*> -> {
+                    listOfAnime = it.result as List<FeedItemData>
+                    feedViewModel.showLoader.value = false
+                }
+                is ApiState.Failure -> {
+                    feedViewModel.showLoader.value = false
+                    Toast.makeText(context, "Something Went Wrong", Toast.LENGTH_SHORT).show()
+                }
+                is ApiState.Loading -> {
+                    feedViewModel.showLoader.value = true
+                }
+            }
+        }
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 56.dp)
             .background(MaterialTheme.colors.background)
     ) {
-        val feedUseCase = FeedItemUseCaseImpl()
-        scope.launch {
-            feedUseCase.getFeedItem(genre).collectLatest {
-                when (it) {
-                    is ApiState.Success<*> -> {
-                        listOfAnime = it.result as List<FeedItemData>
-                        context.showLoader.value = false
-                    }
-                    is ApiState.Failure -> {
-                        context.showLoader.value = false
-                        Toast.makeText(context, "Something Went Wrong", Toast.LENGTH_SHORT).show()
-                    }
-                    is ApiState.Loading -> {
-                        context.showLoader.value = true
-                    }
-                }
-            }
-        }
+
         item {
             if (genre != null && genre.isNotEmpty()) {
                 Text(text = "Showing results for top 10 $genre anime", style = AppStyles.textBodySemiBold, modifier = Modifier.padding(8.dp))
